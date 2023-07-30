@@ -1,0 +1,55 @@
+tbl_Product://///////////////////////////////////////////////////////////////////// product ki sari detail
+
+-product_id		 INT		Primary key for the product
+-title			 VARCHAR	Title of the product
+-rating			 INT		Rating of the product
+-num_orders		 INT		Number of orders for the product
+-status			 VARCHAR	Product status (e.g., In stock, Out of stock, etc.)
+-price	         DECIMAL	Price of the product
+-description	 TEXT	    Description of the product
+-brand	         VARCHAR	Brand of the product
+-material		 VARCHAR	Material(s) used in the product
+-featured_image	 VARCHAR	File path or URL to the featured image of the product
+
+tbl_ProductImages://///////////////////////////////////////////////////////////////////  ik product ki multiple images data collection with the color
+
+-image_id		INT			Primary key for the image
+-color			VARCHAR		Product color(s)
+-product_id		INT			Foreign key referencing the Product Table
+-image_url		VARCHAR		File path or URL to the image
+
+
+tbl_user://///////////////////////////////////////////////////////////////////// customer ki detail
+
+-user_id		INT			Primary key for the user
+-user_name		VARCHAR		user name of the user
+-first_name		VARCHAR		First name of the user
+-last_name		VARCHAR		Last name of the user
+-email			VARCHAR		Email address of the user
+-password		VARCHAR		Password of the user
+-role			VARCHAR		rolee of the user e.g customer, admin
+
+
+tbl_Order:////////////////////////////////////////////////////////////////////////// konsey customer ney kis date ko kitni amount ka konsa order diya
+
+-order_id		INT			Primary key for the order
+-customer_id	INT			Foreign key referencing the Customer Table
+-order_date		DATE		Date when the order was placed
+-total_amount	DECIMAL		Total amount of the order
+-status			VARCHAR		Status of the order (e.g., "Shipped", "Not Shipped")
+
+tbl_OrderItem://///////////////////////////////////////////////////////////////  
+
+-order_item_id	INT		Primary key for the order item
+-order_id		INT		Foreign key referencing the Order Table
+-product_id		INT		Foreign key referencing the Product Table
+-quantity		INT		Quantity of the product in the order
+-rating 		INT		rating of the product in the order
+
+	
+
+
+
+
+
+ 

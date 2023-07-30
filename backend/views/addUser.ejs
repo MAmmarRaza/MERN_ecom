@@ -1,0 +1,115 @@
+<%- include('./components/header') %>
+
+
+    <!-- Spinner Start -->
+    <%- include('./components/spinner') %>
+        <!-- Spinner End -->
+
+
+        <!-- Sidebar Start -->
+        <%- include('./components/sidebar')%>
+            <!-- Sidebar End -->
+
+            <div class="content">
+                <%- include('./components/navbar') %>
+
+                    <!-- Form Start -->
+                    <section class="py-5 gradient-custom">
+                        <div class="container h-100 ">
+                            <div class="row justify-content-center align-items-center h-100">
+                                <div class="col-12 col-lg-9 col-xl-7">
+                                    <div class="card shadow-2-strong card-registration bg-light">
+                                        <div class="card-body p-md-5">
+                                            <h3 class="text-center mb-5">Add the User</h3>
+                                            <form method="post" id="staffAdd">
+                                                <div class="row mb-4">
+                                                    <div class="col-md-6">
+                                                        <div class="form-outline">
+                                                            <input type="text" id="user_name" name="username"
+                                                                class="form-control form-control-lg">
+                                                            <label class="form-label">Username: </label>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <div class="form-outline">
+                                                            <input type="email" class="form-control form-control-lg"
+                                                                id="user_email" name="email">
+                                                            <label class="form-label">Email: </label>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="row mb-4">
+                                                    <div class="form-outline">
+                                                        <input type="password" id="user_password" name="user_password"
+                                                            class="form-control form-control-lg">
+                                                        <label class="form-label">Password: </label>
+                                                    </div>
+                                                    <!-- Add more fields here if needed -->
+                                                </div>
+                                                <div class="text-center">
+                                                    <input class="btn btn-primary btn-lg" type="submit" value="Submit">
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                    <!-- /Form End -->
+                    <script>
+                        // Function to handle form submission
+                        const handlFormSubmit = (event) => {
+                            event.preventDefault();
+                            const staff_username = document.getElementById('user_name').value;
+                            const staff_email = document.getElementById('user_email').value;
+                            const staff_password = document.getElementById('user_password').value;
+
+                            const formData = {
+                                username: staff_username,
+                                email: staff_email,
+                                password: staff_password
+                            };
+
+
+                            fetch("/addStaff", {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json'
+                                },
+                                body: JSON.stringify(formData)
+                            })
+                                .then((response) => {
+                                    if (response.ok) {
+                                        console.log("result: ", response);
+                                        // Show SweetAlert immediately after staff member is added successfully
+                                        Swal.fire({
+                                            icon: 'success',
+                                            title: 'Success',
+                                            text: 'Staff member added successfully!'
+                                        }).then(() => {
+                                            window.location.href = '/staff';
+                                        });
+                                    } else {
+                                        console.error('Error: ', response.statusText);
+                                        Swal.fire({
+                                            icon: 'error',
+                                            title: 'Error',
+                                            text: 'Failed to add staff. Please try again.'
+                                        });
+                                        // Optionally, you can show an error message to the user
+                                    }
+                                })
+                                .catch((error) => {
+                                    console.error('Error:', error.message);
+                                    // Optionally, you can show an error message to the user
+                                });
+                        };
+
+                        // Add event listener to the form to handle form submission
+                        const staffForm = document.getElementById('staffAdd');
+                        staffForm.addEventListener('submit', handlFormSubmit);
+
+                    </script>
+
+                    <%- include('./components/footer')%>

@@ -1,0 +1,251 @@
+<%- include('./components/header') %>
+
+
+    <!-- Spinner Start -->
+    <%- include('./components/spinner') %>
+        <!-- Spinner End -->
+
+
+        <!-- Sidebar Start -->
+        <%- include('./components/sidebar')%>
+            <!-- Sidebar End -->
+
+            <div class="content">
+                <%- include('./components/navbar') %>                       
+                       <!-- Recent Sales Start -->
+                        <div class="container-fluid pt-4 px-4">
+                            <div class="bg-light text-center rounded p-4">
+                                <div class="d-flex align-items-center justify-content-between mb-4">
+                                    <h6 class="mb-0">All Users</h6>
+                                    <a href="#">Show All</a> <!-- Replace href with actual URL -->
+                                </div>
+                                <div class="table-responsive">
+                                    <table class="table text-start align-middle table-bordered table-hover mb-0">
+                                        <thead>
+                                            <tr class="text-dark">
+                                                <th scope="col"><input class="form-check-input" type="checkbox"></th>
+                                                <th scope="col" class="text-center">Sr No.</th>
+                                                <th scope="col" class="text-center">Name</th>
+                                                <th scope="col" class="text-center">Email</th>
+                                                <th scope="col" class="text-center">Action</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <!-- Add user rows here dynamically -->
+                                            <!-- Example row, replace with actual user data from the database -->
+                                            <tr>
+                                                <td><input class="form-check-input" type="checkbox"></td>
+                                                <td class="text-center">01</td>
+                                                <td class="text-center">Ali</td>
+                                                <td class="text-center">ali@gmail.com</td>
+                                                <td class="text-center">
+                                                    <!-- Edit User button -->
+                                                    <a class="btn btn-sm btn-primary" href="#" data-bs-toggle="modal"
+                                                        data-bs-target="#editModalStaff"
+                                                        onclick="openEditModal('Ali', 'ali@gmail.com')">
+                                                        <i class="bi bi-pencil-fill"></i>
+                                                    </a>
+                                                    <a class="btn btn-sm btn-danger ms-2" href=""><i
+                                                            class="bi bi-trash-fill"></i></a>
+                                                </td>
+                                            </tr>
+                                            <!-- Add more user rows as needed -->
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Recent Sales End -->
+                </div>
+                <!-- Content End -->
+    </div>
+
+    <!-- Edit Modal -->
+    <div class="modal fade" id="editModalStaff" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editModalLabel" style="font-size: 20px; font-weight: 600;">
+                        Edit Staff Member: <span id="userName"></span>
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="updateStaff" method="post">
+                        <label style="font-weight: 600; color: black;">Username:</label>
+                        <div class="mb-3">
+                            <input type="hidden" id="staffId" name="staffId" value="">
+                            <input type="text" class="form-control" id="staffUsername" name="staffUsername" value=""
+                                style="height: 30px; font-size: 14px;">
+                        </div>
+                        <div class="mb-3">
+                            <label style="font-weight: 600; color: black;">Email:</label>
+                            <input type="email" class="form-control" id="staffEmail" name="staffEmail" value=""
+                                style="height: 30px; font-size: 14px;">
+                        </div>
+                        <!-- Add other fields here if needed -->
+                        <button type="submit" class="btn btn-success" id="update-btn"
+                            style="height: 32px; width: 100px; font-size: 14px;">Update</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        // Function to fetch and update product data on page load
+        function loadStaffData() {
+            fetch('/showStaff')
+                .then(response => response.json())
+                .then(data => {
+                    const tableBody = document.querySelector('tbody');
+                    if (data.result && data.result.length > 0) {
+                        const staff = data.result;
+                        console.log(staff);
+                        let tableRows = '';
+                        staff.forEach((item, index) => {
+                            tableRows += `
+    <tr>
+        <td class="text-center"><input class="form-check-input" type="checkbox"></td>
+        <td class="text-center">${index + 1}</td>
+        <td class="text-center">${item.username}</td>
+        <td class="text-center">${item.email}</td>
+        <td class="text-center">
+            <a class="btn btn-sm btn-primary" href="#" onclick="setStaffMemberData('${item._id}')"><i class="bi bi-pencil-fill"></i></a>
+            <a class="btn btn-sm btn-danger ms-2" href="#" onclick="deleteStaffMember('${item._id}')" style="cursor: pointer;"><i class="bi bi-trash-fill"></i></a>
+        </td>
+    </tr>`;
+                        });
+                        tableBody.innerHTML = tableRows;
+                    } else {
+                        tableBody.innerHTML = '<tr><td colspan="7">No records found. If you like you can add staff member :)</td></tr>';
+                    }
+                })
+                .catch(error => console.error('Error fetching data:', error));
+        }
+
+        // Call the function when the page loads
+        document.addEventListener("DOMContentLoaded", function () {
+            loadStaffData();
+        });
+    </script>
+    <script>
+        function setStaffMemberData(id) {
+            console.log("enter in method 1");
+            fetch(`/setStaffData?id=${id}`)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Request failed');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    if (data.staffData) {
+                        openEditModal();
+                        document.getElementById("staffUsername").value = data.staffData.username;
+                        document.getElementById("staffEmail").value = data.staffData.email;
+                        document.getElementById("staffId").value = data.staffData._id;
+                    } else {
+                        // Handle the case when staff member data is not available
+                        console.error('Staff member data not available');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+        }
+        function openEditModal() {
+            const editModal = new bootstrap.Modal(document.getElementById('editModalStaff'));
+            editModal.show();
+        }
+
+        document.getElementById("updateStaff").addEventListener("submit", function (event) {
+            event.preventDefault();
+
+            // Get the form data and create a FormData object to handle file uploads
+            const staffUsername = document.getElementById('staffUsername').value;
+            const staffEmail = document.getElementById('staffEmail').value;
+            const staffId = document.getElementById('staffId').value;
+
+            const formData = {
+                username: staffUsername,
+                email: staffEmail,
+                staffId: staffId
+            };
+
+            console.log("formData: ", formData);
+            // Send the form data to the function
+            updateStaff(formData);
+        });
+
+        function updateStaff(formData) {
+            const staffId = formData.staffId;
+            console.log("staffId", staffId);
+            fetch(`/updateStaff?id=${staffId}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(formData)
+            })
+                .then((response) => {
+                    if (!response.ok) {
+                        throw new Error("Request failed");
+                    }
+                    return response.json();
+                })
+                .then((data) => {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Success',
+                        text: 'Staff member updated successfully!'
+                    }).then(() => {
+                        window.location.href = '/user';
+                    });
+                })
+                .catch((error) => {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'error',
+                        text: 'Staff Member not updated!'
+                    })
+                });
+        }
+
+    </script>
+    <script>
+
+        // Function to handle deleting a user
+        function deleteStaffMember(id) {
+            Swal.fire({
+                title: 'Are you sure you want to delete the staff member?',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: '<i class="fa fa-trash"></i> Delete',
+                cancelButtonText: 'Cancel',
+                buttonsStyling: false,
+                customClass: {
+                    confirmButton: 'btn btn-danger mx-2',
+                    cancelButton: 'btn btn-secondary mx-2'
+                }
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    fetch('/deleteStaff?id=' + id, {
+                method: 'DELETE',
+            }).then((res) => {
+                        window.location = '/user';
+                    }).catch((err) => {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: 'Failed to Delete Staff member. Please try again.'
+                        });
+                    })
+                }
+            });
+        }
+
+    </script>
+
+    <%- include('./components/footer')%>
