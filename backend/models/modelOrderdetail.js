@@ -17,11 +17,15 @@ const orderDetailSchema = new Schema({
     country: {
         type: String
     },
-    statee:{
+    state:{
         type: String
     },
     zip:{
         type:Number
+    },
+    date:{
+        type:Date,
+        default: Date.now()
     }
 });
 

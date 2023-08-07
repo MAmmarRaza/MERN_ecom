@@ -1,11 +1,17 @@
 const express = require("express");
+require('dotenv').config();
 const mongoose = require("mongoose");
 const session = require("express-session");
 const cookieParser = require("cookie-parser");
 const renderRouter = require("./routes/renderRouter");
 const productRouter=require("./routes/productRouter");
+const paymentRouter=require("./routes/paymentRouter");
 const staffRouter=require("./routes/staffRouter");
 const orderRouter=require("./routes/orderRouter");
+const notifyRouter=require("./routes/notifyRouter");
+const dashboardRouter=require("./routes/dashboardRouter");
+const mailRouter=require("./routes/mailRouter");
+require("dotenv").config();
 const Auth = require("./routes/auth");
 
 // const path = require("path");
@@ -45,7 +51,10 @@ app.use("/", renderRouter);
 app.use("/",productRouter)
 app.use("/", staffRouter);
 app.use("/", orderRouter);
-
+app.use("/", notifyRouter);
+app.use("/", dashboardRouter);
+app.use("/", mailRouter);
+app.use("/", paymentRouter);
 
 // Start the server
 app.listen(port, () => {

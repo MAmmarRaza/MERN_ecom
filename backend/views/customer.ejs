@@ -11,71 +11,74 @@
             <!-- Sidebar End -->
 
             <div class="content">
-                <%- include('./components/navbar') %>                       
-                       <!-- Recent Sales Start -->
-                        <div class="container-fluid pt-4 px-4">
-                            <div class="bg-light text-center rounded p-4">
-                                <div class="d-flex align-items-center justify-content-between mb-4">
-                                    <h6 class="mb-0">All Users</h6>
-                                    <a href="#">Show All</a> <!-- Replace href with actual URL -->
-                                </div>
-                                <div class="table-responsive">
-                                    <table class="table text-start align-middle table-bordered table-hover mb-0">
-                                        <thead>
-                                            <tr class="text-dark">
-                                                <th scope="col"><input class="form-check-input" type="checkbox"></th>
-                                                <th scope="col" class="text-center">Sr No.</th>
-                                                <th scope="col" class="text-center">Name</th>
-                                                <th scope="col" class="text-center">Email</th>
-                                                <th scope="col" class="text-center">Action</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <!-- Add user rows here dynamically -->
-                                            <!-- Example row, replace with actual user data from the database -->
-                                            <tr>
-                                                <td><input class="form-check-input" type="checkbox"></td>
-                                                <td class="text-center">01</td>
-                                                <td class="text-center">Ali</td>
-                                                <td class="text-center">ali@gmail.com</td>
-                                                <td class="text-center">
-                                                    <!-- Edit User button -->
-                                                    <a class="btn btn-sm btn-primary" href="#" data-bs-toggle="modal"
-                                                        data-bs-target="#editModalStaff"
-                                                        onclick="openEditModal('Ali', 'ali@gmail.com')">
-                                                        <i class="bi bi-pencil-fill"></i>
-                                                    </a>
-                                                    <a class="btn btn-sm btn-danger ms-2" href=""><i
-                                                            class="bi bi-trash-fill"></i></a>
-                                                </td>
-                                            </tr>
-                                            <!-- Add more user rows as needed -->
-                                        </tbody>
-                                    </table>
-                                </div>
+                <%- include('./components/navbar') %>
+                    <!-- Recent Sales Start -->
+                    <div class="container-fluid pt-4 px-4">
+                        <div class="bg-light text-center rounded p-4">
+                            <div class="d-flex align-items-center justify-content-between mb-4">
+                                <h6 class="mb-0">All Users</h6>
+                                <button class="btn btn-small btn-danger"
+                                    onclick="deleteSelectedCustomers()">Delete</button>
+                            </div>
+                            <div class="table-responsive">
+                                <table class="table text-start align-middle table-bordered table-hover mb-0">
+                                    <thead>
+                                        <tr class="text-dark">
+                                            <th scope="col"><input onclick="toggleCustomerSelectAll()"
+                                                    id="selectAllCheckboxes" class="form-check-input" type="checkbox">
+                                            </th>
+                                            <th scope="col" class="text-center">Sr No.</th>
+                                            <th scope="col" class="text-center">Name</th>
+                                            <th scope="col" class="text-center">Email</th>
+                                            <th scope="col" class="text-center">Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <!-- Add user rows here dynamically -->
+                                        <!-- Example row, replace with actual user data from the database -->
+                                        <tr>
+                                            <td><input class="form-check-input" type="checkbox"></td>
+                                            <td class="text-center">01</td>
+                                            <td class="text-center">Ali</td>
+                                            <td class="text-center">ali@gmail.com</td>
+                                            <td class="text-center">
+                                                <!-- Edit User button -->
+                                                <a class="btn btn-sm btn-primary" href="#" data-bs-toggle="modal"
+                                                    data-bs-target="#editModalStaff"
+                                                    onclick="openEditModal('Ali', 'ali@gmail.com')">
+                                                    <i class="bi bi-pencil-fill"></i>
+                                                </a>
+                                                <a class="btn btn-sm btn-danger ms-2" href=""><i
+                                                        class="bi bi-trash-fill"></i></a>
+                                            </td>
+                                        </tr>
+                                        <!-- Add more user rows as needed -->
+                                    </tbody>
+                                </table>
                             </div>
                         </div>
-                        <!-- Recent Sales End -->
-                </div>
-                <!-- Content End -->
-    </div>
+                    </div>
+                    <!-- Recent Sales End -->
+            </div>
+            <!-- Content End -->
+            </div>
 
 
-    <script>
-        // Function to fetch and update product data on page load
-        function loadStaffData() {
-            fetch('/showCustomer')
-                .then(response => response.json())
-                .then(data => {
-                    const tableBody = document.querySelector('tbody');
-                    if (data.result && data.result.length > 0) {
-                        const staff = data.result;
-                        console.log(staff);
-                        let tableRows = '';
-                        staff.forEach((item, index) => {
-                            tableRows += `
+            <script>
+                // Function to fetch and update product data on page load
+                function loadStaffData() {
+                    fetch('/showCustomer')
+                        .then(response => response.json())
+                        .then(data => {
+                            const tableBody = document.querySelector('tbody');
+                            if (data.result && data.result.length > 0) {
+                                const staff = data.result;
+                                console.log(staff);
+                                let tableRows = '';
+                                staff.forEach((item, index) => {
+                                    tableRows += `
     <tr>
-        <td class="text-center"><input class="form-check-input" type="checkbox"></td>
+        <td><input  onchange="handleCustomerCheckbox(event,'${item._id}')" data-order-id="${item._id}" class="form-check-input checkInput" id="checkInput" type="checkbox"></td>
         <td class="text-center">${index + 1}</td>
         <td class="text-center">${item.username}</td>
         <td class="text-center">${item.email}</td>
@@ -83,55 +86,156 @@
             <a class="btn btn-sm btn-danger ms-2" href="#" onclick="deleteCustomer('${item._id}')" style="cursor: pointer;"><i class="bi bi-trash-fill"></i></a>
         </td>
     </tr>`;
-                        });
-                        tableBody.innerHTML = tableRows;
-                    } else {
-                        tableBody.innerHTML = '<tr><td colspan="7">No records found. If you like you can add staff member :)</td></tr>';
-                    }
-                })
-                .catch(error => console.error('Error fetching data:', error));
-        }
-
-        // Call the function when the page loads
-        document.addEventListener("DOMContentLoaded", function () {
-            loadStaffData();
-        });
-    </script>
-    
-    <script>
-
-        // Function to handle deleting a user
-        function deleteCustomer(id) {
-            Swal.fire({
-                title: 'Are you sure you want to delete the staff member?',
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#3085d6',
-                cancelButtonColor: '#d33',
-                confirmButtonText: '<i class="fa fa-trash"></i> Delete',
-                cancelButtonText: 'Cancel',
-                buttonsStyling: false,
-                customClass: {
-                    confirmButton: 'btn btn-danger mx-2',
-                    cancelButton: 'btn btn-secondary mx-2'
+                                });
+                                tableBody.innerHTML = tableRows;
+                            } else {
+                                tableBody.innerHTML = '<tr><td colspan="7">No records found. If you like you can add staff member :)</td></tr>';
+                            }
+                        })
+                        .catch(error => console.error('Error fetching data:', error));
                 }
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    fetch('/deleteStaff?id=' + id, {
-                method: 'DELETE',
-            }).then((res) => {
-                        window.location = '/customer';
-                    }).catch((err) => {
+
+                // Call the function when the page loads
+                document.addEventListener("DOMContentLoaded", function () {
+                    loadStaffData();
+                });
+            </script>
+
+            <script>
+
+                // Function to handle deleting a user
+                function deleteCustomer(id) {
+                    Swal.fire({
+                        title: 'Are you sure you want to delete the staff member?',
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonColor: '#3085d6',
+                        cancelButtonColor: '#d33',
+                        confirmButtonText: '<i class="fa fa-trash"></i> Delete',
+                        cancelButtonText: 'Cancel',
+                        buttonsStyling: false,
+                        customClass: {
+                            confirmButton: 'btn btn-danger mx-2',
+                            cancelButton: 'btn btn-secondary mx-2'
+                        }
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            fetch('/deleteStaff?id=' + id, {
+                                method: 'DELETE',
+                            }).then((res) => {
+                                window.location = '/customer';
+                            }).catch((err) => {
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Error',
+                                    text: 'Failed to Delete Staff member. Please try again.'
+                                });
+                            })
+                        }
+                    });
+                }
+
+                // handle checkboxes
+                const checkArray = [];
+                function handleCustomerCheckbox(event, id) {
+                    checkbox = event.target;
+                    if (checkbox.checked) {
+                        checkArray.push(id);
+                        console.log(checkArray);
+                    } else {
+                        // Remove the ID from the array if the checkbox is unchecked
+                        const index = checkArray.indexOf(id);
+                        if (index > -1) {
+                            checkArray.splice(index, 1);
+                            console.log(checkArray);
+                        }
+                    }
+                }
+
+                // Function to handle the "Select All" checkbox
+                function toggleCustomerSelectAll() {
+                    const selectAllCheckbox = document.getElementById('selectAllCheckboxes');
+                    const checkboxes = document.querySelectorAll('.checkInput');
+                    if (selectAllCheckbox.checked) {
+                        // Select all checkboxes and add their IDs to the checkArray
+                        checkboxes.forEach(checkbox => {
+                            checkbox.checked = true;
+                            if (checkbox.id !== 'selectAllCheckboxes') {
+                                checkArray.push(checkbox.dataset.orderId);
+                            }
+                        });
+                        console.log(checkArray);
+                    } else {
+                        // Deselect all checkboxes and clear the checkArray
+                        checkboxes.forEach(checkbox => {
+                            checkbox.checked = false;
+                        });
+                        checkArray.length = 0;
+                        console.log(checkArray);
+                    }
+                }
+
+                /////////////////////////////////// delete product alll selected///////////////////////////////////////////////////////////////////
+                function deleteSelectedCustomers() {
+                    if (checkArray.length > 0) {
+                        // Send the array of selected order IDs to the server for deletion
+                        Swal.fire({
+                            title: 'Are you sure you want to delete Selected Customers?',
+                            icon: 'warning',
+                            showCancelButton: true,
+                            confirmButtonColor: '#3085d6',
+                            cancelButtonColor: '#d33',
+                            confirmButtonText: '<i class="fa fa-trash"></i> Delete',
+                            cancelButtonText: 'Cancel',
+                            buttonsStyling: false,
+                            customClass: {
+                                confirmButton: 'btn btn-danger mx-2',
+                                cancelButton: 'btn btn-secondary mx-2'
+                            }
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+
+                                fetch('/deleteSelectedUsers', {
+                                    method: 'POST',
+                                    headers: {
+                                        'Content-Type': 'application/json'
+                                    },
+                                    body: JSON.stringify({ staffIds: checkArray })
+                                })
+                                    .then(response => response.json())
+                                    .then(data => {
+                                        if (data.success) {
+                                            // Reload the page to reflect the updated order list
+                                            Swal.fire({
+                                                icon: 'success',
+                                                title: 'Success',
+                                                text: 'Data Deleted Successfully!'
+                                            });
+                                        } else {
+                                            Swal.fire({
+                                                icon: 'error',
+                                                title: 'Error',
+                                                text: 'Failed to change Status. Please try again.'
+                                            });
+
+                                        }
+                                    })
+                                    .catch(error => {
+                                        console.error('Error:', error);
+                                    });
+
+                                window.location = '/customer';
+                            }
+                        });
+                    } else {
                         Swal.fire({
                             icon: 'error',
                             title: 'Error',
-                            text: 'Failed to Delete Staff member. Please try again.'
+                            text: 'No Product Selected!'
                         });
-                    })
+                    }
+
                 }
-            });
-        }
+            </script>
 
-    </script>
-
-    <%- include('./components/footer')%>
+            <%- include('./components/footer')%>

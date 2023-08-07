@@ -38,6 +38,10 @@ const productSchema = new Schema({
     status:{
         type:Number,
         default:1
+    },
+    date:{
+        type:Date,
+        default: Date.now()
     }
 });
 

@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import { Link } from 'react-router-dom'
 import axios from "axios"
+import Swal from 'sweetalert2';
 
 function Login() {
     const [login_email , login_set_email] = useState("");
@@ -9,12 +10,22 @@ function Login() {
         event.preventDefault();
     
         // Make the HTTP POST request to send the form data to the server
-        axios.post("http://localhost:4000/login", { login_email,login_password })
+        axios.post("http://localhost:4000/Customerlogin", { login_email,login_password })
           .then(result => {
             console.log(result.data); // Assuming the server sends back a response with data
             // navigate("/");
+            Swal.fire({
+                icon: 'success',
+                title: 'Success',
+                text: 'Successfully Login In!'
+            });
           })
           .catch(error => {
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: 'Failed to Login!'
+            });
             console.error(error);
           });
       }

@@ -7,9 +7,9 @@
                 <div class="bg-light rounded p-4 p-sm-5 my-4 mx-3">
                     <div class="d-flex align-items-center justify-content-between mb-3">
                         <a href="index.html" class="">
-                            <h3 class="text-primary"><i class="fa fa-hashtag me-2"></i>DASHMIN</h3>
+                            <h3 class="text-danger"><i class="fa fa-hashtag me-2"></i>Ecommerce</h3>
                         </a>
-                        <h3>Sign In</h3>
+                        <h3 class="text-danger">Sign In</h3>
                     </div>
                     <form method="post" id="loginForm">
                         <div class="form-floating mb-3">
@@ -22,14 +22,9 @@
                                 name="password">
                             <label for="floatingPassword">Password</label>
                         </div>
-                        <div class="d-flex align-items-center justify-content-between mb-4">
-                            <div class="form-check">
-                                <input type="checkbox" class="form-check-input" id="exampleCheck1">
-                                <label class="form-check-label" for="exampleCheck1">Check me out</label>
-                            </div>
-                            <a href="">Forgot Password</a>
-                        </div>
-                        <button type="submit" class="btn btn-primary py-3 w-100 mb-4">Sign In</button>
+                        
+                        <button type="submit" class="btn btn-danger py-3 w-100 mb-4">Sign In</button>
+
                     </form>
                 </div>
             </div>
@@ -71,13 +66,26 @@
                         window.location.href = '/index';
                         // Handle successful login, e.g., redirect the user to a dashboard page
                     } else {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: 'Invalid Credentials!!'
+                        });
                         console.log('Login failed:', result);
                         // Handle login failure, e.g., display an error message to the user
                     }
                 } catch (error) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: 'Invalid Credentials!!'
+                    });
                     console.log('Error occurred:', error);
                     // Handle other errors, e.g., display an error message to the user
                 }
             });
         });
+
+        
     </script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.12/dist/sweetalert2.all.min.js"></script>

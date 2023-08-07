@@ -31,32 +31,6 @@ Router.get('/signup', fetchUser, (req, res) => {
     }
 });
 
-Router.get('/table', fetchUser, (req, res) => {
-    try {
-
-        res.render("table");
-    } catch (error) {
-        res.send('table page not render');
-    }
-});
-
-Router.get('/typography', fetchUser, (req, res) => {
-    try {
-
-        res.render("typography");
-    } catch (error) {
-        res.send('typography page not render');
-    }
-});
-
-Router.get('/widget', fetchUser, (req, res) => {
-    try {
-
-        res.render("widget");
-    } catch (error) {
-        res.send('widget page not render');
-    }
-});
 
 Router.get('/products', fetchUser, (req, res) => {
     try {
@@ -70,7 +44,7 @@ Router.get('/products', fetchUser, (req, res) => {
 Router.get('/addProduct', fetchUser, (req, res) => {
     try {
 
-        res.render("addProduct");
+        res.render("addProduct", { currentPage: 'addProduct' });
     } catch (error) {
         res.send('typography page not render');
     }
@@ -79,7 +53,7 @@ Router.get('/addProduct', fetchUser, (req, res) => {
 Router.get('/updateProduct', fetchUser, (req, res) => {
     try {
 
-        res.render("updateProduct");
+        res.render("updateProduct",{ currentPage: 'updateProduct' });
     } catch (error) {
         res.send('updateProduc page not render');
     }
@@ -88,7 +62,7 @@ Router.get('/updateProduct', fetchUser, (req, res) => {
 Router.get('/addUser', fetchUser, (req, res) => {
     try {
 
-        res.render("addUser");
+        res.render("addUser",{ currentPage: 'addUser' });
     } catch (error) {
         res.send('addUser page not render');
     }
@@ -97,7 +71,7 @@ Router.get('/addUser', fetchUser, (req, res) => {
 Router.get('/user', fetchUser, (req, res) => {
     try {
 
-        res.render("user");
+        res.render("user", { currentPage: 'user' });
     } catch (error) {
         res.send('User page not render');
     }
@@ -119,7 +93,7 @@ Router.get('/addProductApi', fetchUser, (req, res) => {
 Router.get('/orders', fetchUser, (req, res) => {
     try {
 
-        res.render("orders", { currentPage: 'order' });
+        res.render("orders", { currentPage: 'orders' });
     } catch (error) {
         res.send('Order page not render');
     }
@@ -158,4 +132,5 @@ Router.get('/logout', (req, res) => {
   });
 
 
+ 
 module.exports = Router;

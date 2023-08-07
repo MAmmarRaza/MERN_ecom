@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>PayPal Node App</title>
+</head>
+
+<body>
+  <h1> Book </h1>
+  <h2>Buy For $25</h2>
+  <form action="/payment" method="post">
+    <input type="submit" value="Buy">
+  </form>
+  <!-- ... Rest of your HTML code ... -->
+
+  <button id="payWithPayPal">Pay with PayPal</button>
+  <script>
+    // Function to open PayPal approval page in a new window
+    const openPayPalApprovalPage = (approvalUrl) => {
+      const width = 600;
+      const height = 400;
+      const left = window.screen.width / 2 - width / 2;
+      const top = window.screen.height / 2 - height / 2;
+      const options = `width=${width},height=${height},left=${left},top=${top}`;
+
+      // Open the approval URL in a new window
+      const newWindow = window.open(approvalUrl, 'PayPal Approval', options);
+
+      // Handle the payment response when the new window is closed
+      const handleWindowClose = () => {
+        fetch('/success') // Endpoint to check payment status
+          .then((response) => response.json())
+          .then((data) => {
+            if (data.success) {
+              alert('Payment was successful!');
+            } else {
+              alert('Payment was canceled or failed.');
+            }
+          })
+          .catch((error) => {
+            console.error('Error processing payment:', error.message);
+            alert('Error processing payment. Please try again later.');
+          });
+      };
+
+      // Detect when the new window is closed
+      if (newWindow) {
+        const intervalId = setInterval(() => {
+          if (newWindow.closed) {
+            clearInterval(intervalId);
+            handleWindowClose();
+          }
+        }, 1000); // Poll every 1 second
+      } else {
+        console.error('Failed to open the approval URL in a new window.');
+        alert('Failed to open the approval URL. Please try again.');
+      }
+    };
+
+    document.getElementById('payWithPayPal').addEventListener('click', async () => {
+      try {
+        const response = await fetch('/payment', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        });
+
+        const data = await response.json();
+
+        // Check if the response contains the approval_url
+        if (data.approval_url) {
+          // Open the PayPal approval page in a new window or pop-up
+          openPayPalApprovalPage(data.approval_url);
+        } else {
+          // Handle the case where no approval_url is found
+          console.error('No approval URL found in the response:', data);
+          // Display an error message or take appropriate action
+        }
+      } catch (error) {
+        // Handle any errors that occur during the fetch request
+        console.error('Error processing payment:', error.message);
+        // Display an error message or take appropriate action
+      }
+    });
+  </script>
+  <!-- ... Rest of your HTML code ... -->
+
+</body>
+
+</html>

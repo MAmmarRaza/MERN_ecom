@@ -7,7 +7,7 @@ const ProductItem = (props) => {
     return (
         <>
             <div className="product-item">
-                <Link to={`/productDetailPage?id=${product._id}`}><img src={`http://localhost:4000/images/${product.featured}`} alt={`${product.featured}`} /></Link>
+                <Link to={`/productDetailPage?id=${product._id}`}><img src={`http://localhost:4000/images/${product.featured}`} height={"350px"} alt={`${product.featured}`} /></Link>
                 <div className="down-content">
                     <Link to="/productDetailPage"><h4>{product.title}</h4></Link>
                     <h6>${product.price}</h6>

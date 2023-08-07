@@ -4,13 +4,16 @@ import Footer from './Footer'
 import Navbar from './Navbar'
 import CheckoutItem from './CheckoutItem'
 import Cookies from 'js-cookie'
-// import jwt from 'jsonwebtoken';
+import Swal from 'sweetalert2';
+
 
 const CheckOut = () => {
 
     const [product, setProduct] = useState([]);
     const [total, settotal] = useState(0);
     const [customer, setcustomer] = useState({});
+    const [email, setemail] = useState('');
+
 
     useEffect(() => {
         // Get the cart data from cookies
@@ -35,6 +38,7 @@ const CheckOut = () => {
                 if (response.ok) {
                     const data = await response.json();
                     setcustomer(data);
+                    setemail(data.email);
                 }
             } catch (err) {
                 console.error('Error fetching products:', err);
@@ -45,7 +49,6 @@ const CheckOut = () => {
 
     }, []);
     const [username, setusername] = useState('');
-    const [email, setemail] = useState('');
     const [address, setaddress] = useState('');
     const [country, setcountry] = useState('');
     const [state, setstate] = useState('');
@@ -67,8 +70,24 @@ const CheckOut = () => {
         const data = await response.json();
         if (response.ok) {
           setMessage('Order added successfully.');
-          navigate('/');
+          Swal.fire({
+            icon: 'success',
+            title: 'Successful!',
+            text: 'Order Placed!'
+        })
+        Cookies.set('cart', []);
+        const cartData = Cookies.get('cart') || '[]';
+        const cartItems = JSON.parse(cartData);
+        const totalPrice = cartItems.reduce((total, product) => total + product.price, 0);
+        
+        settotal(totalPrice);
+        setProduct(cartItems);
         } else {
+            Swal.fire({
+                icon: 'error',
+                title: 'Error!',
+                text: 'Error in Order Placing!'
+            })
           setMessage(data);
         }
       } catch (error) {
@@ -100,18 +119,18 @@ const CheckOut = () => {
         }
     };
 
+
+
     return (
         <>
             <Navbar />
-            
-            <div className="container py-5">
+            <div className="container py-5 ">
+
+            </div>
+            <div className="container py-5 ">
                 
-                <div className=" py-5 text-center">
-                    <img className="d-block mx-auto mb-4" src="https://getbootstrap.com/docs/4.0/assets/brand/bootstrap-solid.svg" alt="" width="72" height="72" />
-                    <h2>Checkout form</h2>
-                    <p className="lead">Below is an example form built entirely with Bootstrap's form controls. Each required form group has a validation state that can be triggered by attempting to submit the form without completing it.</p>
-                </div>
-                <div className="row">
+                
+                <div className="row " >
                     <div className="col-md-4 order-md-2 mb-4">
                         <h4 className="d-flex justify-content-between align-items-center mb-3">
                             <span className="text-muted">Your cart</span>
@@ -119,7 +138,7 @@ const CheckOut = () => {
                         </h4>
                         <ul className="list-group mb-3">
                             {product.map((item) => (
-                                <CheckoutItem key={item._id} productId={item._id} removeProduct={removeProductFromCart} title={item.title} price={item.price} featured={item.featured} />
+                                <CheckoutItem key={item._id} productId={item._id} removeProduct={removeProductFromCart} title={item.title} size={item.selectedSize} price={item.price} featured={item.featured} quantity={item.quantity} />
                             ))}
                             <li className="list-group-item d-flex justify-content-between">
                                 <span>Total (USD)</span>
@@ -231,7 +250,7 @@ const CheckOut = () => {
                                 </div>
                             </div>
                             <hr className="mb-4" />
-                            <button className="btn btn-primary btn-lg btn-block" type="submit">Continue to checkout</button>
+                            <button className="btn btn-danger btn-lg btn-block" type="submit">Continue to checkout</button>
                         </form>
                     </div>
 

@@ -618,6 +618,8 @@ footer .inner-content p a {
 
 .products {
 	margin-top: 100px;
+  min-height: calc(100vh - 180px); /* Set the min-height to take the viewport height and subtract header and footer height */
+  padding-bottom: 20px; 
 }
 
 .products .filters {

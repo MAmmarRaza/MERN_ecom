@@ -1,4 +1,5 @@
 const express = require('express');
+const { ObjectId } = require('mongodb');
 const productRouter = express.Router();
 const Products=require("../models/modelProduct");
 const multer = require("multer");
@@ -54,11 +55,17 @@ var storage = multer.diskStorage({
   // show product
 
   productRouter.get("/showproducts", async (req, res) => {
-    
+    console.log(req.query.brand)
     try {
-      const results= await Products.find();
+      if(req.query && req.query.brand){
+        const results= await Products.find({brand: req.query.brand});
+        res.status(200).json({result: results});
+      }else{
+        const results= await Products.find(req.body.brand);
+        res.status(200).json({result: results});
+      }     
       // res.render("products",{result: results });
-      res.status(200).json({result:results});
+      
     } catch (error) {
       res.status(500).json({ error: 'An error occurred while retrieving the records.' });
     }
@@ -242,5 +249,26 @@ productRouter.post('/saveUpdateProduct', upload.fields([
       res.status(500).json("not updated");
       console.log('Not Update');
   }
+});
+
+// selected product delete
+productRouter.post('/deleteSelectedProducts', async (req, res) => {
+  const productIds = req.body.productIds; // Assuming the frontend sends an array of order IDs
+  // Delete the selected orders from MongoDB
+
+  // Convert the orderIds array to MongoDB ObjectIds
+  const mongoObjectIds = productIds.map(id => new ObjectId(id));
+  try {
+    const response = await Products.deleteMany({ _id: { $in: mongoObjectIds } });
+    if (response.deletedCount > 0) {
+      res.status(200).json({ success: true });
+    } else {
+      return res.status(404).json({ success: false, message: 'No matching orders found.' });
+    }
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ success: false, message: 'Server error.' });
+  }
+
 });
 module.exports = productRouter;

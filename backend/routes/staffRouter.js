@@ -1,4 +1,5 @@
 const express = require('express');
+const { ObjectId } = require('mongodb');
 const staffRouter = express.Router();
 const Staff = require('../models/modelStaff');
 
@@ -101,5 +102,27 @@ staffRouter.delete('/deleteStaff', async (req, res) => {
         res.status(500).json("Staff member not Delete");
     }
 });
+
+// selected product delete
+staffRouter.post('/deleteSelectedUsers', async (req, res) => {
+    const staffIds = req.body.staffIds; // Assuming the frontend sends an array of order IDs
+    // Delete the selected orders from MongoDB
+  
+    // Convert the orderIds array to MongoDB ObjectIds
+    const mongoObjectIds = staffIds.map(id => new ObjectId(id));
+    try {
+      const response = await Staff.deleteMany({ _id: { $in: mongoObjectIds } });
+      if (response.deletedCount > 0) {
+        res.status(200).json({ success: true });
+      } else {
+        return res.status(404).json({ success: false, message: 'No matching orders found.' });
+      }
+    } catch (error) {
+      console.error(error);
+      return res.status(500).json({ success: false, message: 'Server error.' });
+    }
+  
+  });
+
 
 module.exports = staffRouter;

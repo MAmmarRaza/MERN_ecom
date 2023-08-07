@@ -9,9 +9,7 @@ const Footer = () => {
           <div className="row">
             <div className="col-md-12">
               <div className="inner-content">
-                <p>Copyright &copy; 2020 Chain Clothing Co., Ltd.
-
-                  - Design: <a href="https://templatemo.com" target="_blank">TemplateMo</a></p>
+                <p>Copyright &copy; 2023 Ammar Raza.</p>
               </div>
             </div>
           </div>

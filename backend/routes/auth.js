@@ -13,7 +13,7 @@ router.post('/signup', async (req, res) => {
     try {
         const user1 = await addUsers.findOne({ email: req.body.email });
         if (user1) {
-            res.json('This user with this email is already inserted.');
+            return res.status(500).json('Email Already Exist!');
         }else{
             const salt = await bcrypt.genSalt(10);
             const securePass = await bcrypt.hash(req.body.password, salt)
@@ -26,7 +26,7 @@ router.post('/signup', async (req, res) => {
             
             await userData.save();
             const getData = {
-                userData: {
+                user: {
                     id: userData._id
                 }
             }
@@ -45,9 +45,9 @@ router.post('/signup', async (req, res) => {
 router.post("/login", async (req, res) => {
     try {
         const { email, password } = req.body;
-        const user1 = await addUsers.findOne({ email });
+        const user1 = await addUsers.findOne({ email, role: {$in: [0, 1 ]}});
         if (!user1) {
-            return res.json("Incorrect logins");
+            return res.status(500).json("Incorrect logins");
         }
 
         const cmpPass = await bcrypt.compare(password, user1.password);
@@ -68,6 +68,35 @@ router.post("/login", async (req, res) => {
         res.status(500).json({ error: 'Internal Server Error' });
     }
 });
+
+
+router.post("/Customerlogin", async (req, res) => {
+    try {
+        const { email, password } = req.body;
+        const user1 = await addUsers.findOne({ email, role: 2 });
+        if (!user1) {
+            return res.status(500).json("Incorrect logins");
+        }
+
+        const cmpPass = await bcrypt.compare(password, user1.password);
+        if (!cmpPass) {
+            return res.json("Incorrect logins");
+        }
+        const getData = {
+            user: {
+                id: user1.id
+            }
+        }
+        const auth_token = jwt.sign(getData, Jwt_Secret_Key);
+        req.session.token = auth_token;
+        res.status(200).json({token:auth_token});
+
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+});
+
 // to get customer through jwt token coming from body of react checkout
 router.post("/getCustomer",async (req, res) => {
     try {

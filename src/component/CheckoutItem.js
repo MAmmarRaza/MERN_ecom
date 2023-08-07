@@ -26,7 +26,8 @@ export default function CheckoutItem(props) {
             <img src={`http://localhost:4000/images/${props.featured}`} className="img-fluid" style={{ width: 80 }} alt='This is about checkout details' />
               <div className=''>
                 <h6 class="mx-1">{props.title}</h6>
-                <span class="text-muted">{props.price}$</span>
+                <span class="text-muted">{props.quantity}-{props.size}</span> / 
+                <span class="text-muted"> {props.price}$</span>
               </div>
               <a style={{cursor:"pointer"}} className="float-end text-black" onClick={handleRemoveProduct} >
                      <i className="fas fa-times"></i>
