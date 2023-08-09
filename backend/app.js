@@ -5,7 +5,7 @@ const session = require("express-session");
 const cookieParser = require("cookie-parser");
 const renderRouter = require("./routes/renderRouter");
 const productRouter=require("./routes/productRouter");
-const paymentRouter=require("./routes/paymentRouter");
+// const paymentRouter=require("./routes/paymentRouter");
 const staffRouter=require("./routes/staffRouter");
 const orderRouter=require("./routes/orderRouter");
 const notifyRouter=require("./routes/notifyRouter");
@@ -54,7 +54,7 @@ app.use("/", orderRouter);
 app.use("/", notifyRouter);
 app.use("/", dashboardRouter);
 app.use("/", mailRouter);
-app.use("/", paymentRouter);
+// app.use("/", paymentRouter);
 
 // Start the server
 app.listen(port, () => {
