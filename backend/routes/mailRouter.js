@@ -11,7 +11,7 @@ const transporter = nodemailer.createTransport({
   port: 587,
   auth: {
     user: 'ammarqadri280@gmail.com',
-    pass: '',
+    pass: 'you password',
   },
   tls: {
     ciphers: 'TLSv1.2', // Use TLSv1.2 instead of SSLv3
